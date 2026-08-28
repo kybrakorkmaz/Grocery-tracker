@@ -9,7 +9,7 @@ const SSOCallbackScreen = () => {
     }
 
     if (isSignedIn) {
-        return <Redirect href={"/"} />;
+        return <Redirect href={"/(tabs)/index"} />;
     }
 
     return <Redirect href={"/(auth)/sign-in"} />;

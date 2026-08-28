@@ -2,7 +2,7 @@ import useSocialAuth from "@/hooks/useSocialAuth";
 import {Pressable, Text, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import { Image } from "expo-image";
-import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function SignInScreen(){
     const { handleSocialAuth, loadingStrategy } = useSocialAuth();
