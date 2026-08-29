@@ -1,4 +1,4 @@
-import {listGroceryItems} from "@/lib/server/db-actions";
+import { createGroceryItem, listGroceryItems } from "@/lib/server/db-actions";
 
 export async function GET() {
     try {
