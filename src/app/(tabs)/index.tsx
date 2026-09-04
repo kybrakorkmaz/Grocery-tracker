@@ -1,10 +1,8 @@
 import { useEffect } from "react";
-import {View, Text, ScrollView, FlatList} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import TabScreenBackground from "@/components/TabScreenBackground";
-import ListHeroCard from "@/components/list/ListHeroCard";
-import {useGroceryStore} from "@/store/grocery-store";
-import PendingItemCard from "@/components/list/PendingItemCard";
-import CompletedItems from "@/components/list/CompletedItems";
+import { CompletedItems, ListHeroCard, PendingItemCard } from "@/features/list";
+import { useGroceryStore } from "@/store/grocery-store";
 
 export default function IndexScreen() {
     const {items, loadItems} = useGroceryStore();
