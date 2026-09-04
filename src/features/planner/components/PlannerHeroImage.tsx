@@ -5,7 +5,7 @@ const PlannerHeroImage = () => {
     return (
         <View className="overflow-hidden rounded-[30px] border border-border bg-card">
             <Image
-                source={require("../../../assets/images/hero.png")}
+                source={require("@/assets/images/hero.png")}
                 className="h-56 w-full"
                 resizeMode="cover"
             />

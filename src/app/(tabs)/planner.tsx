@@ -1,5 +1,4 @@
-import PlannerFormCard from "@/components/planner/PlannerFormCard";
-import PlannerHeroImage from "@/components/planner/PlannerHeroImage";
+import { PlannerFormCard, PlannerHeroImage } from "@/features/planner";
 import TabScreenBackground from "@/components/TabScreenBackground";
 import { useGroceryStore } from "@/store/grocery-store";
 import { FontAwesome6 } from "@expo/vector-icons";
