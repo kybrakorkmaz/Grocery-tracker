@@ -1,8 +1,8 @@
-import { useGroceryStore } from "@/store/grocery-store";
+import { useInsightsPresenter } from "@/features/insights/presenters/useInsightsPresenter";
 import { Pressable, Text } from "react-native";
 
 export default function ClearCompletedButton() {
-    const { clearPurchased } = useGroceryStore();
+    const { clearPurchased } = useInsightsPresenter();
 
     return (
         <Pressable className="rounded-2xl bg-primary py-3" onPress={clearPurchased}>

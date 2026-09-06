@@ -10,9 +10,16 @@ if (typeof process.loadEnvFile === "function") {
 }
 
 const databaseUrl = process.env.DATABASE_URL;
+const seedUserId = process.env.SEED_USER_ID;
 
 if (!databaseUrl) {
     throw new Error("DATABASE_URL is required. Example: DATABASE_URL=... npm run seed:grocery");
+}
+
+if (!seedUserId) {
+    throw new Error(
+        "SEED_USER_ID is required (your Clerk user id). Example: SEED_USER_ID=user_xxx npm run seed:grocery",
+    );
 }
 
 const sql = neon(databaseUrl);
@@ -34,6 +41,7 @@ async function seed() {
     await sql`
     CREATE TABLE IF NOT EXISTS grocery_items (
       id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
       name TEXT NOT NULL,
       category TEXT NOT NULL,
       quantity INTEGER NOT NULL DEFAULT 1,
@@ -43,11 +51,14 @@ async function seed() {
     )
   `;
 
+    await sql`CREATE INDEX IF NOT EXISTS grocery_items_user_id_idx ON grocery_items (user_id)`;
+
     for (const item of seedItems) {
         await sql`
-      INSERT INTO grocery_items (id, name, category, quantity, purchased, priority, updated_at)
+      INSERT INTO grocery_items (id, user_id, name, category, quantity, purchased, priority, updated_at)
       VALUES (
         ${crypto.randomUUID()},
+        ${seedUserId},
         ${item.name},
         ${item.category},
         ${item.quantity},
@@ -58,7 +69,7 @@ async function seed() {
     `;
     }
 
-    console.log(`Seed complete: inserted ${seedItems.length} grocery items.`);
+    console.log(`Seed complete: inserted ${seedItems.length} grocery items for user ${seedUserId}.`);
 }
 
 seed().catch((error) => {

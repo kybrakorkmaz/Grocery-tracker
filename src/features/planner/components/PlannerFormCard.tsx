@@ -1,4 +1,5 @@
-import { GroceryCategory, GroceryPriority, useGroceryStore } from "@/store/grocery-store";
+import type { GroceryCategory, GroceryPriority } from "@/features/grocery/model/types";
+import { usePlannerPresenter } from "@/features/planner/presenters/usePlannerPresenter";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -12,10 +13,10 @@ const categoryIcons = {
     Bakery: "bread-slice",
     Pantry: "box-open",
     Snacks: "cookie-bite",
-};
+} as const;
 
 const PlannerFormCard = () => {
-    const { error, addItem } = useGroceryStore();
+    const { error, addItem } = usePlannerPresenter();
 
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("1");
@@ -25,7 +26,6 @@ const PlannerFormCard = () => {
     const canCreate = name.trim().length > 0;
 
     const handleQuantityChange = (value: string) => {
-        // this regex is used to remove all non-numeric characters from the input
         setQuantity(value.replace(/[^0-9]/g, ""));
     };
 
@@ -37,10 +37,6 @@ const PlannerFormCard = () => {
             quantity: Number(quantity),
         });
 
-        // optional
-        // Alert.alert("Success", "Item created");
-
-        // reset our form
         setName("");
         setQuantity("1");
         setCategory("Produce");
@@ -49,7 +45,6 @@ const PlannerFormCard = () => {
 
     return (
         <View className="rounded-3xl border border-border bg-card p-4">
-            {/* NAME */}
             <Text className="text-sm font-semibold text-foreground">Item name</Text>
             <View className="mt-2 flex-row items-center rounded-2xl border border-border bg-muted px-4 py-3">
                 <FontAwesome6 name="bag-shopping" size={13} color="#5b7567" />
@@ -62,7 +57,6 @@ const PlannerFormCard = () => {
                 />
             </View>
 
-            {/* QUANTITY */}
             <Text className="mt-4 text-sm font-semibold text-foreground">Quantity</Text>
             <View className="mt-2 flex-row items-center rounded-2xl border border-border bg-muted px-4 py-3">
                 <FontAwesome6 name="hashtag" size={13} color="#5b7567" />
@@ -76,7 +70,6 @@ const PlannerFormCard = () => {
                 />
             </View>
 
-            {/* CATEGORIES */}
             <Text className="mt-4 text-sm font-semibold text-foreground">Category</Text>
             <View className="mt-2 flex-row flex-wrap gap-2">
                 {categories.map((option) => {
@@ -106,7 +99,6 @@ const PlannerFormCard = () => {
                 })}
             </View>
 
-            {/* PRIORITY */}
             <Text className="mt-4 text-sm font-semibold text-foreground">Priority</Text>
             <View className="mt-2 flex-row gap-2">
                 {priorities.map((option) => {

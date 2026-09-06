@@ -1,12 +1,11 @@
-import { useGroceryStore } from "@/store/grocery-store";
+import { useInsightsPresenter } from "@/features/insights/presenters/useInsightsPresenter";
 import { Text, View } from "react-native";
 
 export default function InsightsPrioritySection() {
-    const { items } = useGroceryStore();
-    const highPriority = items.filter((item) => item.priority === "high" && !item.purchased).length;
+    const { highPriorityRemaining } = useInsightsPresenter();
 
     const highPriorityTone =
-        highPriority === 0
+        highPriorityRemaining === 0
             ? "Everything critical is covered."
             : "Handle these first for a smoother trip.";
 
@@ -15,18 +14,22 @@ export default function InsightsPrioritySection() {
             <View className="flex-row items-center justify-between">
                 <Text className="text-sm font-semibold text-foreground">High priority remaining</Text>
                 <View
-                    className={`rounded-full px-3 py-1 ${highPriority ? "bg-priority-high" : "bg-priority-low"}`}
+                    className={`rounded-full px-3 py-1 ${
+                        highPriorityRemaining ? "bg-priority-high" : "bg-priority-low"
+                    }`}
                 >
                     <Text
                         className={`text-xs font-bold uppercase ${
-                            highPriority ? "text-priority-high-foreground" : "text-priority-low-foreground"
+                            highPriorityRemaining
+                                ? "text-priority-high-foreground"
+                                : "text-priority-low-foreground"
                         }`}
                     >
-                        {highPriority ? "Action" : "Clear"}
+                        {highPriorityRemaining ? "Action" : "Clear"}
                     </Text>
                 </View>
             </View>
-            <Text className="mt-1 text-3xl font-extrabold text-foreground">{highPriority}</Text>
+            <Text className="mt-1 text-3xl font-extrabold text-foreground">{highPriorityRemaining}</Text>
             <Text className="mt-1 text-sm text-muted-foreground">{highPriorityTone}</Text>
         </View>
     );

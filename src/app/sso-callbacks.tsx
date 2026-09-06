@@ -2,13 +2,14 @@ import { useAuth } from "@clerk/expo";
 import { Redirect } from "expo-router";
 
 const SSOCallbackScreen = () => {
-    const { isSignedIn, isLoaded } = useAuth();
+    const { userId, isSignedIn, isLoaded } = useAuth();
 
     if (!isLoaded) {
         return null;
     }
 
     if (isSignedIn) {
+        console.log(userId);
         return <Redirect href={"/(tabs)"} />;
     }
 

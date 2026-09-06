@@ -4,3 +4,4 @@ export { default as InsightsPrioritySection } from "./components/InsightsPriorit
 export { default as InsightsStatsSection } from "./components/InsightsStatsSection";
 export { default as SentryFeedbackButton } from "./components/SentryFeedbackButton";
 export { default as UserProfile } from "./components/UserProfile";
+export { useInsightsPresenter } from "./presenters/useInsightsPresenter";

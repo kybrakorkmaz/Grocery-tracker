@@ -1,15 +1,9 @@
-import { useGroceryStore } from "@/store/grocery-store";
+import { useInsightsPresenter } from "@/features/insights/presenters/useInsightsPresenter";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 export default function InsightsStatsSection() {
-    const { items } = useGroceryStore();
-
-    const totalItems = items.length;
-    const completedItems = items.filter((item) => item.purchased).length;
-    const pendingItems = totalItems - completedItems;
-
-    const completionRate = totalItems ? Math.round((completedItems / totalItems) * 100) : 0;
+    const { pendingItems, completedItems, totalItems, completionRate } = useInsightsPresenter();
 
     return (
         <>

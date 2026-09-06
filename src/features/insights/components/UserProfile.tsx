@@ -2,13 +2,20 @@ import { useClerk, useUser } from "@clerk/expo";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
+import { useGroceryStore } from "@/store/grocery-store";
 
 const UserProfile = () => {
     const { signOut } = useClerk();
     const { user } = useUser();
+    const reset = useGroceryStore((state) => state.reset);
 
     const email = user?.primaryEmailAddress?.emailAddress;
     const displayName = user?.fullName || email?.split("@")[0];
+
+    const handleSignOut = async () => {
+        reset();
+        await signOut();
+    };
 
     return (
         <View className="rounded-3xl border border-border bg-card p-4">
@@ -24,7 +31,7 @@ const UserProfile = () => {
                     <Text className="text-sm text-muted-foreground">{email}</Text>
                 </View>
                 <Pressable
-                    onPress={() => signOut()}
+                    onPress={handleSignOut}
                     className="h-9 w-9 items-center justify-center rounded-xl bg-destructive"
                 >
                     <FontAwesome6 name="right-from-bracket" size={13} color="#d45f58" />
