@@ -6,13 +6,13 @@ import * as AuthSession from "expo-auth-session";
 import { useRouter } from "expo-router";
 import { AuthActionStrategy } from "../constants/authOptions";
 
-export const useSocialAuth = () => {
+export const useAuthMethod = () => {
     const [loadingStrategy, setLoadingStrategy] = useState<AuthActionStrategy | null>(null);
     const { startSSOFlow } = useSSO();
     const router = useRouter();
 
-    const handleSocialAuth = async (strategy: AuthActionStrategy) => {
-        if (loadingStrategy) return; // when one of the option is clicked prevent others while loading the clicked option sign-in page
+    const handleAuthMethod = async (strategy: AuthActionStrategy) => {
+        if (loadingStrategy) return; // when one of the options is clicked, prevent others while loading the clicked option sign-in page
 
         // 1. Imperative Navigation for Email Flow
         if (strategy === "email_login") {
@@ -67,9 +67,9 @@ export const useSocialAuth = () => {
     };
 
     return {
-        handleSocialAuth,
+        handleAuthMethod: handleAuthMethod,
         loadingStrategy,
     };
 };
 
-export default useSocialAuth;
+export default useAuthMethod;

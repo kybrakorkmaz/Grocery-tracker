@@ -1,12 +1,12 @@
-import { useSocialAuth } from "@/features/auth";
 import {Text, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import {SIGN_IN_OPTIONS} from "@/features/auth/constants/authOptions";
 import {SignInButton} from "@/features/auth/components/SignInButton";
+import {useAuthMethod}from "@/features/auth/hooks/useAuthMethod";
 
 export default function SignInScreen(){
-    const { handleSocialAuth, loadingStrategy } = useSocialAuth();
+    const { handleAuthMethod, loadingStrategy } = useAuthMethod();
     return (
         <SafeAreaView className="flex-1 bg-primary dark:bg-secondary" edges={["top"]}>
             {/* decorative elements */}
@@ -50,7 +50,7 @@ export default function SignInScreen(){
                             key={option.id}
                             option={option}
                             loadingStrategy={loadingStrategy}
-                            onPress={handleSocialAuth}
+                            onPress={handleAuthMethod}
                         />
                     ))}
                 </View>
