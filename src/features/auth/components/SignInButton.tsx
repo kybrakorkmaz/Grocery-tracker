@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { SignInOption, AuthActionStrategy} from "../constants/authOptions";
+import { SignInOption, AuthActionStrategy} from "@/features/auth";
 
 interface SignInButtonProps {
     option: SignInOption;

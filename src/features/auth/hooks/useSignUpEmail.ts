@@ -1,4 +1,4 @@
-import { useSignUp } from "@clerk/expo";
+import { useClerk, useSignUp } from "@clerk/expo";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
@@ -11,6 +11,7 @@ export type SignUpFormValues = {
 
 export const useSignUpEmail = () => {
     const { signUp, errors, fetchStatus } = useSignUp();
+    const { client } = useClerk();
     const router = useRouter();
 
     const [pendingVerification, setPendingVerification] = useState(false);
@@ -71,14 +72,17 @@ export const useSignUpEmail = () => {
             return;
         }
 
-        if (signUp.status !== "complete") {
-            setError("Verification incomplete. Please try again.");
+        // Account is created. Clerk also creates a client session at this point;
+        // without removing it, the next sign-in returns "You're already signed in".
+        // Do not call finalize() — that would activate the session and open the app.
+        if (signUp.status === "complete") {
+            await client.removeSessions();
+            await signUp.reset();
+            router.replace("/(auth)/email-sign-in");
             return;
         }
 
-        // Account is verified; do not finalize so the user signs in manually.
-        await signUp.reset();
-        router.replace("/(auth)/email-sign-in");
+        setError("Verification incomplete. Please try again.");
     };
 
     const handleResendCode = async () => {
