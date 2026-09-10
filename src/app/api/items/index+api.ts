@@ -7,7 +7,11 @@ import { withErrorHandler } from "@/lib/server/error-handler";
 export const GET = withErrorHandler(async (request: Request) => {
     const auth = await requireAuthUser(request);
     const rows = await listGroceryItems(auth.userId);
-    return Response.json({ items: rows.map(toGroceryItem) });
+    return Response.json({ items: rows.map(toGroceryItem) }, {
+        headers: {
+            "Cache-Control": "no-store",
+        },
+    });
 });
 
 export const POST = withErrorHandler(async (request: Request) => {

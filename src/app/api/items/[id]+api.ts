@@ -8,12 +8,7 @@ import { toGroceryItem } from "@/lib/server/mappers";
 import { UpdateItemSchema } from "@/lib/server/validation";
 import { ApiError, withErrorHandler } from "@/lib/server/error-handler";
 
-type RouteContext = {
-    params: { id: string };
-};
-
-export const PATCH = withErrorHandler(async (request: Request, context: RouteContext) => {
-    const { id } = context.params;
+export const PATCH = withErrorHandler(async (request: Request, { id }: { id: string }) => {
     const auth = await requireAuthUser(request);
     const body = await request.json();
 
@@ -28,8 +23,7 @@ export const PATCH = withErrorHandler(async (request: Request, context: RouteCon
     return Response.json({ item: toGroceryItem(row) });
 });
 
-export const DELETE = withErrorHandler(async (request: Request, context: RouteContext) => {
-    const { id } = context.params;
+export const DELETE = withErrorHandler(async (request: Request, { id }: { id: string }) => {
     const auth = await requireAuthUser(request);
 
     const deleted = await deleteGroceryItem(auth.userId, id);

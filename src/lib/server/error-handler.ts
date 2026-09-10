@@ -36,7 +36,13 @@ export function withErrorHandler<T extends any[]>(
                 return Response.json({ error: message }, { status: 400 });
             }
 
-            // 3. Handle unexpected errors (500)
+            // 3. Handle invalid JSON payloads (400)
+            if (error instanceof SyntaxError) {
+                const apiError = new ApiError(400, "Invalid JSON");
+                return Response.json({ error: apiError.message }, { status: apiError.status });
+            }
+
+            // 4. Handle unexpected errors (500)
             console.error("[API Error] Unhandled exception:", error);
 
             const isProd = process.env.NODE_ENV === "production";
