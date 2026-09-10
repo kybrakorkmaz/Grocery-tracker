@@ -1,4 +1,4 @@
-import { GroceryItem, useGroceryStore } from "@/store/grocery-store";
+import type { GroceryItem } from "@/features/grocery/model/types";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 
@@ -14,15 +14,25 @@ const priorityPillText = {
     high: "text-priority-high-foreground",
 };
 
-const PendingItemCard = ({ item }: { item: GroceryItem }) => {
-    const { removeItem, updateQuantity, togglePurchased } = useGroceryStore();
+type PendingItemCardProps = {
+    item: GroceryItem;
+    onTogglePurchased: (id: string) => void;
+    onUpdateQuantity: (id: string, quantity: number) => void;
+    onRemove: (id: string) => void;
+};
 
+const PendingItemCard = ({
+    item,
+    onTogglePurchased,
+    onUpdateQuantity,
+    onRemove,
+}: PendingItemCardProps) => {
     return (
         <View className="rounded-3xl border border-border bg-card p-4">
             <View className="flex-row items-start gap-3">
                 <Pressable
                     className="mt-1 size-6 items-center justify-center rounded-full border-2 border-border bg-card"
-                    onPress={() => togglePurchased(item.id)}
+                    onPress={() => onTogglePurchased(item.id)}
                 ></Pressable>
 
                 <View className="flex-1">
@@ -46,7 +56,7 @@ const PendingItemCard = ({ item }: { item: GroceryItem }) => {
                     <View className="mt-3 flex-row items-center gap-2">
                         <Pressable
                             className="h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted"
-                            onPress={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            onPress={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
                         >
                             <FontAwesome6 name="minus" size={12} color="#3b5a4a" />
                         </Pressable>
@@ -57,7 +67,7 @@ const PendingItemCard = ({ item }: { item: GroceryItem }) => {
 
                         <Pressable
                             className="h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted"
-                            onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                            onPress={() => onUpdateQuantity(item.id, item.quantity + 1)}
                         >
                             <FontAwesome6 name="plus" size={12} color="#3b5a4a" />
                         </Pressable>
@@ -66,7 +76,7 @@ const PendingItemCard = ({ item }: { item: GroceryItem }) => {
 
                 <Pressable
                     className="h-9 w-9 items-center justify-center rounded-xl bg-destructive"
-                    onPress={() => removeItem(item.id)}
+                    onPress={() => onRemove(item.id)}
                 >
                     <FontAwesome6 name="trash" size={13} color="#d45f58" />
                 </Pressable>

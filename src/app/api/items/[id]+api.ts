@@ -3,30 +3,31 @@ import {
     setGroceryItemPurchased,
     updateGroceryItemQuantity,
 } from "@/lib/server/db-actions";
+import { requireAuthUser } from "@/lib/server/auth";
+import { toGroceryItem } from "@/lib/server/mappers";
+import { UpdateItemSchema } from "@/lib/server/validation";
+import { ApiError, withErrorHandler } from "@/lib/server/error-handler";
 
-export async function PATCH(request: Request, { id }: { id: string }) {
-    try {
-        const body = await request.json();
+export const PATCH = withErrorHandler(async (request: Request, { id }: { id: string }) => {
+    const auth = await requireAuthUser(request);
+    const body = await request.json();
 
-        const item = body.quantity
-            ? await updateGroceryItemQuantity(id, body.quantity)
-            : await setGroceryItemPurchased(id, body.purchased ?? true);
+    const { quantity, purchased } = UpdateItemSchema.parse(body);
 
-        if (!item) return Response.json({ error: "Item not found." }, { status: 404 });
+    const row = quantity !== undefined
+        ? await updateGroceryItemQuantity(auth.userId, id, quantity)
+        : await setGroceryItemPurchased(auth.userId, id, purchased ?? true);
 
-        return Response.json({ item });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to update item";
-        return Response.json({ error: message }, { status: 500 });
-    }
-}
+    if (!row) throw new ApiError(404, "Item not found.");
 
-export async function DELETE(_request: Request, { id }: { id: string }) {
-    try {
-        await deleteGroceryItem(id);
-        return Response.json({ ok: true });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to delete item";
-        return Response.json({ error: message }, { status: 500 });
-    }
-}
+    return Response.json({ item: toGroceryItem(row) });
+});
+
+export const DELETE = withErrorHandler(async (request: Request, { id }: { id: string }) => {
+    const auth = await requireAuthUser(request);
+
+    const deleted = await deleteGroceryItem(auth.userId, id);
+    if (!deleted) throw new ApiError(404, "Item not found.");
+
+    return Response.json({ ok: true });
+});

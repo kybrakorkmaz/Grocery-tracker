@@ -1,4 +1,4 @@
-import { useGroceryStore } from "@/store/grocery-store";
+import { useInsightsPresenter } from "@/features/insights/presenters/useInsightsPresenter";
 import { Text, View } from "react-native";
 
 const categoryColors: Record<string, string> = {
@@ -10,14 +10,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function InsightsCategorySection() {
-    const { items } = useGroceryStore();
-    const total = items.length;
-
-    const categories = items.reduce<Record<string, number>>((acc, item) => {
-        acc[item.category] = (acc[item.category] ?? 0) + 1;
-        return acc;
-    }, {});
-    const categoryEntries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+    const { totalItems, categoryEntries } = useInsightsPresenter();
 
     return (
         <View className="rounded-3xl border border-border bg-card p-4">
@@ -29,7 +22,7 @@ export default function InsightsCategorySection() {
             </View>
 
             {categoryEntries.map(([category, count]) => {
-                const widthPercent = total ? Math.max(10, Math.round((count / total) * 100)) : 10;
+                const widthPercent = totalItems ? Math.max(10, Math.round((count / totalItems) * 100)) : 10;
                 return (
                     <View key={category} className="mt-3">
                         <View className="mb-1 flex-row items-center justify-between">

@@ -1,11 +1,9 @@
 import { clearPurchasedItems } from "@/lib/server/db-actions";
+import { requireAuthUser } from "@/lib/server/auth";
+import { withErrorHandler } from "@/lib/server/error-handler";
 
-export async function POST() {
-    try {
-        await clearPurchasedItems();
-        return Response.json({ ok: true });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to clear completed items";
-        return Response.json({ error: message }, { status: 500 });
-    }
-}
+export const POST = withErrorHandler(async (request: Request) => {
+    const auth = await requireAuthUser(request);
+    await clearPurchasedItems(auth.userId);
+    return Response.json({ ok: true });
+});

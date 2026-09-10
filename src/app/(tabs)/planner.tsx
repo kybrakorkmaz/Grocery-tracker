@@ -1,22 +1,12 @@
-import PlannerFormCard from "@/components/planner/PlannerFormCard";
-import PlannerHeroImage from "@/components/planner/PlannerHeroImage";
+import { PlannerFormCard, PlannerHeroImage } from "@/features/planner";
 import TabScreenBackground from "@/components/TabScreenBackground";
-import { useGroceryStore } from "@/store/grocery-store";
+import { usePlannerPresenter } from "@/features/planner/presenters/usePlannerPresenter";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const PlannerScreen = () => {
-    const { items } = useGroceryStore();
-
-    const pendingCount = items.filter((item) => !item.purchased).length;
-    const highPriorityCount = items.filter(
-        (item) => !item.purchased && item.priority === "high",
-    ).length;
-
-    const totalQuantity = items
-        .filter((item) => !item.purchased)
-        .reduce((sum, item) => sum + item.quantity, 0);
+    const { pendingCount, highPriorityCount, totalQuantity } = usePlannerPresenter();
 
     return (
         <KeyboardAwareScrollView
