@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { View, Text, FlatList } from "react-native";
 import TabScreenBackground from "@/components/TabScreenBackground";
 import { CompletedItems, ListHeroCard, PendingItemCard } from "@/features/list";
@@ -9,15 +8,10 @@ export default function IndexScreen() {
         pendingItems,
         pendingCount,
         completedItems,
-        loadItems,
         removeItem,
         updateQuantity,
         togglePurchased,
     } = useGroceryListPresenter();
-
-    useEffect(() => {
-        void loadItems();
-    }, [loadItems]);
 
     return (
         <FlatList

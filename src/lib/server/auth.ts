@@ -1,4 +1,5 @@
 import { createClerkClient } from "@clerk/backend";
+import { ApiError } from "./error-handler";
 
 export type AuthUser = {
     userId: string;
@@ -26,24 +27,20 @@ function getClerkClient() {
 
 /**
  * Verifies the Clerk session JWT from the Authorization header.
- * Returns the authenticated Clerk user id, or a 401 Response.
+ * Throws an ApiError (401) if authentication fails.
  */
-export async function requireAuthUser(request: Request): Promise<AuthUser | Response> {
+export async function requireAuthUser(request: Request): Promise<AuthUser> {
     const clerkClient = getClerkClient();
     const requestState = await clerkClient.authenticateRequest(request);
 
     if (!requestState.isAuthenticated) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
+        throw new ApiError(401, "Unauthorized");
     }
 
     const auth = requestState.toAuth();
     if (!auth.userId) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
+        throw new ApiError(401, "Unauthorized");
     }
 
     return { userId: auth.userId };
-}
-
-export function isAuthError(result: AuthUser | Response): result is Response {
-    return result instanceof Response;
 }

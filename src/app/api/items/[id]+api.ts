@@ -3,40 +3,37 @@ import {
     setGroceryItemPurchased,
     updateGroceryItemQuantity,
 } from "@/lib/server/db-actions";
-import { isAuthError, requireAuthUser } from "@/lib/server/auth";
+import { requireAuthUser } from "@/lib/server/auth";
 import { toGroceryItem } from "@/lib/server/mappers";
+import { UpdateItemSchema } from "@/lib/server/validation";
+import { ApiError, withErrorHandler } from "@/lib/server/error-handler";
 
-export async function PATCH(request: Request, { id }: { id: string }) {
-    try {
-        const auth = await requireAuthUser(request);
-        if (isAuthError(auth)) return auth;
+type RouteContext = {
+    params: { id: string };
+};
 
-        const body = await request.json();
+export const PATCH = withErrorHandler(async (request: Request, context: RouteContext) => {
+    const { id } = context.params;
+    const auth = await requireAuthUser(request);
+    const body = await request.json();
 
-        const row = body.quantity
-            ? await updateGroceryItemQuantity(auth.userId, id, body.quantity)
-            : await setGroceryItemPurchased(auth.userId, id, body.purchased ?? true);
+    const { quantity, purchased } = UpdateItemSchema.parse(body);
 
-        if (!row) return Response.json({ error: "Item not found." }, { status: 404 });
+    const row = quantity !== undefined
+        ? await updateGroceryItemQuantity(auth.userId, id, quantity)
+        : await setGroceryItemPurchased(auth.userId, id, purchased ?? true);
 
-        return Response.json({ item: toGroceryItem(row) });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to update item";
-        return Response.json({ error: message }, { status: 500 });
-    }
-}
+    if (!row) throw new ApiError(404, "Item not found.");
 
-export async function DELETE(request: Request, { id }: { id: string }) {
-    try {
-        const auth = await requireAuthUser(request);
-        if (isAuthError(auth)) return auth;
+    return Response.json({ item: toGroceryItem(row) });
+});
 
-        const deleted = await deleteGroceryItem(auth.userId, id);
-        if (!deleted) return Response.json({ error: "Item not found." }, { status: 404 });
+export const DELETE = withErrorHandler(async (request: Request, context: RouteContext) => {
+    const { id } = context.params;
+    const auth = await requireAuthUser(request);
 
-        return Response.json({ ok: true });
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to delete item";
-        return Response.json({ error: message }, { status: 500 });
-    }
-}
+    const deleted = await deleteGroceryItem(auth.userId, id);
+    if (!deleted) throw new ApiError(404, "Item not found.");
+
+    return Response.json({ ok: true });
+});
